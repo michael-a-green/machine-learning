@@ -128,6 +128,7 @@ def train_predict(clf, X_train, y_train, X_test, y_test):
     # Print the results of prediction for both training and testing
     print "F1 score for training set: {:.4f}.".format(predict_labels(clf, X_train, y_train))
     print "F1 score for test set: {:.4f}.".format(predict_labels(clf, X_test, y_test))
+
 # TODO: Import the three supervised learning models from sklearn
 # from sklearn import model_A
 from sklearn import tree
@@ -256,8 +257,8 @@ parameters = {'base_estimator' : [
 clf = AdaBoostClassifier(n_estimators=50,algorithm='SAMME')
 
 # TODO: Make an f1 scoring function using 'make_scorer' 
-f1_scorer = make_scorer(explained_variance_score)
-
+#f1_scorer = make_scorer(explained_variance_score)
+f1_scorer = make_scorer(f1_score, pos_label='yes')
 # TODO: Perform grid search on the classifier using the f1_scorer as the scoring method
 grid_obj = GridSearchCV(clf,parameters,f1_scorer)
 
@@ -291,29 +292,50 @@ print y_test
 #    else:
 #        y_train_300.set_value(i,0)
 
-y_train_300_2 = []
-
-print "y_train_300_2", y_train_300_2
-
-for col, col_data in y_train_300.iteritems():
-    
-    print "col_data = ", col_data
-    
-    if col_data == 'yes':
-        y_train_300_2.append(1)
-    else:
-        y_train_300_2.append(0)
-
-print "new contents of y_train_300_2\n"
-print y_train_300_2
-
-y_train_300_3 = np.asarray(y_train_300_2)
-
-print "y_train_300_3 = \n"
-print y_train_300_3
+# y_train_300_2 = []
+# 
+# print "y_train_300_2", y_train_300_2
+# 
+# for col, col_data in y_train_300.iteritems():
+#     
+#     print "col_data = ", col_data
+#     
+#     if col_data == 'yes':
+#         y_train_300_2.append(1)
+#     else:
+#         y_train_300_2.append(0)
+# 
+# print "new contents of y_train_300_2\n"
+# print y_train_300_2
+# 
+# y_train_300_3 = np.asarray(y_train_300_2)
+# 
+# print "new contents of y_train_300_3\n"
+# print y_train_300_3
+# 
+# #converting y_test into something digestable
+# y_test_2 = []
+# 
+# for col, col_data in y_test.iteritems():
+#     
+#     print "col_data = ", col_data
+#     
+#     if col_data == 'yes':
+#         y_test_2.append(1)
+#     else:
+#         y_test_2.append(0)
+# 
+# print "new contents of y_test_2\n"
+# print y_test_2
+# 
+# 
+# y_test_3 = np.asarray(y_test_2)
+# 
+# print "y_test_3 = \n"
+# print y_test_3
 
 # TODO: Fit the grid search object to the training data and find the optimal parameters
-grid_obj = grid_obj.fit(X_train_300, y_train_300_3)
+grid_obj = grid_obj.fit(X_train_300, y_train_300)
 
 # Get the estimator
 clf = grid_obj.best_estimator_
