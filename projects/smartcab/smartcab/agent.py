@@ -48,7 +48,7 @@ class LearningAgent(Agent):
             #self.epsilon = self.epsilon - 0.05
             self.epsilon = math.exp(-0.002 * self.trial_number)/math.exp(1.0)
             
-        print "Current Q table =>\n%0s\n"%(self.Q)
+        #print "Current Q table =>\n%0s\n"%(self.Q)
         self.trial_number += 1
 
         return None
@@ -68,7 +68,9 @@ class LearningAgent(Agent):
         ###########
         # Set 'state' as a tuple of relevant data for the agent        
         #state is a tuple of the relevant states from Question 4
-        state = (waypoint,inputs)
+        #state = (inputs['light'],inputs['oncoming'],inputs['left'],inputs['right'])
+        #state = (inputs['light'],inputs['oncoming'])
+        state = (waypoint, inputs['light'],inputs['oncoming'],inputs['left'])
         
         #state = None
 
@@ -231,7 +233,7 @@ def run():
     # Follow the driving agent
     # Flags:
     #   enforce_deadline - set to True to enforce a deadline metric
-    env.set_primary_agent(agent, enforce_deadline= True)
+    env.set_primary_agent(agent, enforce_deadline=True)
 
     ##############
     # Create the simulation
@@ -247,7 +249,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run(n_test=10, tolerance=0.05)
 
 
 if __name__ == '__main__':
