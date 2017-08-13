@@ -90,13 +90,13 @@ class LearningAgent(Agent):
         
         maxQ = None
         
-        for qaction in Q[ str(state) ].keys():
+        for qaction in self.Q[ str(state) ].keys():
         
-            if(Q[str(state)][qaction] > temp_qvalue):
-                temp_qvalue = Q[str(state)][qaction] 
+            if(self.Q[str(state)][qaction] > temp_qvalue):
+                temp_qvalue = self.Q[str(state)][qaction] 
         
         maxQ = temp_qvalue
-        
+                
         return maxQ 
 
 
@@ -132,14 +132,7 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-                
-        #action = None
-        
-        #tie breaker: If all actions are equal
-        #choose action None
-        temp_maxq_action = None
-        temp_action_value = 0
-        
+                                
         ########### 
         ## TO DO ##
         ###########
@@ -163,12 +156,8 @@ class LearningAgent(Agent):
             #otherwise choose the action with the highest action-value for the
             #given state
             else:
-                for qaction in self.Q[str(state)].keys():
-                    if self.Q[str(state)][qaction] > temp_action_value:
-                        temp_maxq_action = qaction
-                        temp_action_value = self.Q[str(state)][qaction]
-                        
-                action = temp_maxq_action
+                best_actions = [myaction for myaction in self.valid_actions if self.Q[str(state)][myaction] == self.get_maxQ(state)]
+                action = random.choice(best_actions)
                 
  
         return action
