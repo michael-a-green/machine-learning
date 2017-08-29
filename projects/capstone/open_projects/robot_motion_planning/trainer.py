@@ -14,7 +14,8 @@ dir_reverse = {'u': 'd', 'r': 'l', 'd': 'u', 'l': 'r',
                'up': 'd', 'right': 'l', 'down': 'u', 'left': 'r'}
 
 # test and score parameters
-max_time = 1000
+#max_time = 1000
+max_time = 700000
 train_score_mult = 1/30.
 
 if __name__ == '__main__':
@@ -30,14 +31,15 @@ if __name__ == '__main__':
     testrobot = Robot(  maze_dim = testmaze.dim,
                         verbose = True,
                         alpha = 0.5, 
-                        epsilon = 0.1,
+                        epsilon = 1.0,
                         gamma = 0.9, 
-                        learning = True )
+                        learning = True,
+                        training = True )
 
     # Record robot performance over two runs.
     runtimes = []
     total_time = 0
-    for run in range(2):
+    for run in range(10):
         print "Starting run {}.".format(run)
 
         # Set the robot in the start position. Note that robot position
@@ -121,5 +123,6 @@ if __name__ == '__main__':
                     print "Goal found; run {} completed!".format(run)
 
     # Report score if robot is successful.
-    if len(runtimes) == 2:
+    if len(runtimes) == 10:
+        testrobot.write_out_qtable()
         print "Task complete! Score: {:4.3f}".format(runtimes[1] + train_score_mult*runtimes[0])
