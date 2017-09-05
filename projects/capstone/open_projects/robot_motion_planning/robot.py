@@ -22,6 +22,7 @@ class Robot(object):
         self.GOAL_BOUNDS = [self.maze_dim/2 - 1, self.maze_dim/2]
         self.last_movement = 0
         self.old_distance_factor = 0.0
+        self.last_locations = []
         
         #flag to indicate in the previous timestep
         #the robot was in a corner and is turning out of it
@@ -58,7 +59,7 @@ class Robot(object):
         
         #if not training read in previously trained pkl file into the Qtable
         if not(self.training):
-            print "time=%0d reading in prevously trained pkl file"
+            print "time=%0d reading in prevously trained pkl file"%(self.timestep)
             self.Q =   pickle.load( open("robot_Qtable.p","rb") )          
 
     
@@ -193,12 +194,18 @@ class Robot(object):
     
     def calc_reward(self,new_location, current_location):
     
+        temp_reward = -1
+    
         if new_location[0] in self.GOAL_BOUNDS and new_location[1] in self.GOAL_BOUNDS:        
-            return 10
+            temp_reward = 10
         elif new_location == current_location:
-            return -1
+            temp_reward = -10
         else:
-            return 1 + self.distance_factor_to_goal(new_location)
+            temp_reward = 1 + self.distance_factor_to_goal(new_location)
+            
+        #self.last_locations.append(new_location)
+        
+        return temp_reward
             
     def learn(self, state, nextstate, reward, movement, rotation):
     

@@ -1,6 +1,6 @@
 # Machine Learning Engineer Nanodegree
 ## Capstone Proposal
-Michael Green August 24, 2017
+Michael Green August 29, 2017
 
 ## Proposal
 
@@ -35,7 +35,6 @@ The [Micromouse](https://en.wikipedia.org/wiki/Micromouse) is an event that bega
 Also there has been ongoing research into robot automation and in particular automatic 
 maze traversal using various underlying algorithms.[^1][^2][^3]
 
-
 [^1]: Osmankovic, D & Konjicija, Samim. (2011). Implementation of Q - Learning algorithm for solving maze problem.. 1619-1622. 
 [^2]: Ahamed Munna, Tanvir. (2013). Maze solving Algorithm for line following robot and derivation of linear path distance from nonlinear path. .
 [^3]: Rakshit, Pratyusha & Konar, Amit & Bhowmik, Pavel & Goswami, Indrani & Das, Sanjoy & C. Jain, Lakhmi & Nagar, Atulya. (2013). Realization of an Adaptive Memetic Algorithm Using Differential Evolution and Q-Learning: A Case Study in Multirobot Path Planning. Systems, Man, and Cybernetics: Systems, IEEE Transactions on. 43. 814-831. 10.1109/TSMCA.2012.2226024. 
@@ -43,7 +42,11 @@ maze traversal using various underlying algorithms.[^1][^2][^3]
 
 This past research is relevant because it offers proven techniques that serve as the
 useful body of work regarding how machine learning has helped to produce solutions
-to tough robot automation problems that has applications from consumer electronics, to medicine, to safety and security.
+to tough robot automation problems that have applications from consumer electronics, to 
+medicine, to safety and security. For example, the underlying technology described here 
+can be applied to urban rescue robots such as what is described in [^5]
+
+[^5]: Davids, Angela. (2002). Urban Search and Rescue Robots: From Tragedy to Technology.. IEEE Intelligent Systems. 17. 81-83. 10.1109/5254.999224. 
 
 #### Why This Problem Should Be Addressed 
 
@@ -51,7 +54,8 @@ As the concepts of robot automation embody themselves in an ever greater variety
 applications, there is a need to explore various alternative solutions to this particular
 problem.
 
-#### My Person Motivation
+#### My Personal Motivation
+
 From a personal perspective, I believe that machine learning based robot automation
 has applications in other fields. I believe that working on this will give me deeper
 insight into how machine learning can be applied to this problem that will help me to apply
@@ -74,29 +78,24 @@ replicable (the problem can be reproduced and occurs more than once).
 
 Simply put, the problem is to develop the "brain" of a robot that takes as input only
 the number of free squares to its left, front, and right sides given to it by three
-sensors, and automatically traverses the maze to any one of the maze's four goal squares. 
+sensors, and automatically traverse a maze to any one of the maze's four goal squares. 
 
-The three maps that must be traversed are given below.
-
-![Maze 1](maze1.jpg)
-![Maze 2](maze2.jpg)
-![Maze 3](maze3.jpg)
-
-
-The robot will always begin a location (0,0) (shown in red in the diagrams above) facing 
+The robot will always begin at location (0,0) (shown in red in the diagrams in [Datasets]) facing 
 upwards (`self.heading=='up'`). The other constraint on the problem is that the robot is 
-constrained to make the following movements once per time step:
+only allowed to make the following movements once per time step:
 
 * It can rotate either -90, 0, or  90 degrees
 * It can move no more than 3 squares
 
 The robot successfully traverses the maze when it has entered anyone of the four squares
-in the center of the maze. These will be called the _goal squares_ (shown above in red)
-in this proposal.
+in the center of the maze. These will be called the _goal squares_ (shown below in red in
+the diagrams in [Datasets]) in this proposal.
 
-There is an overall 1000 time step limitation for any runs that will be scored.
+There is an overall time step limitation: The robot gets a total of 1000 time steps
+to traverse the maze. As is described in [Metrics], it will perform two runs that
+must total no greater than 1000 time steps.
 
-### Datasets and Inputs
+### Datasets and Inputs [Datasets]
 
 
 <!-- 
@@ -114,7 +113,15 @@ the problem.
 -->
 
 
-The dataset for this problem is composed of the three mazes depicted above.
+The dataset for this problem is composed of the three mazes depicted below.
+
+![Maze 1](maze1.jpg)
+![Maze 2](maze2.jpg)
+![Maze 3](maze3.jpg)
+
+As you can see there are three mazes that must be traversed. The overall shape of 
+each maze is a perfect square. The dimensions for the first maze are 12x12, for the second
+maze are 14x14, and the third maze are 16x16.
 
 ### Solution Statement
 
@@ -153,15 +160,13 @@ model or result is measurable (can be measured by some metric and
 clearly observed) with thorough detail.
 -->
 
-The benchmark is a score that is calculated by doing the following:
 
-* In run 1, the score is is the number of time steps it took the robot to explore the maze and eventually move into a goal square divided by 30
-* Once it has completed run 1 (reached a goal square) it will be placed back at (0,0) and be timed again.
-
-Once it has reached the goal the second time, the overal score will be the summation of the two scores above.
+The benchmark model used in this project will be that of a robot that always randomly
+makes movements on every time step. I will compare the score achieved by the RL-based robot
+to the score of a robot that always moves based on random decisions.
 
 
-### Evaluation Metrics
+### Evaluation Metrics [Metrics]
 
 
 <!--
@@ -176,11 +181,17 @@ Complex evaluation metrics should be clearly defined and quantifiable
 (can be expressed in mathematical or logical terms).
 -->
 
-The scoring scheme as described in [BenchmarkModel] model is the evaluation metric used
-to quantify performance of the model.
+The scoring scheme is as follows:
 
-For example if the robot took 600 steps in run 1 to reach a goal square, and then took
-400 steps to reach the goal in run 2 then the overall score would be:
+The robot will be scored based on two runs, where in each run the robot starts at square (0,0) with heading "up":
+
+* In run #1, the score is is the number of time steps it took the robot to explore the maze and eventually move into a goal square divided by 30. Run #1 ends when the robot has reached a goal square.
+* In run #2, the score is the number of time steps it took the robot to reach the goal square.
+
+Once it has reached a goal square in run #2, the overall score will be the summation of the score from #1 and run #2.
+
+For example if the robot took 600 steps in run #1 to reach a goal square, and then took
+400 steps to reach the goal in run #2, then the overall score would be:
 
     Overall Score = 1/30 * 600 + 400 = 420
 
@@ -201,14 +212,16 @@ required. The discussion should clearly outline your intended workflow
 of the capstone project.
 -->
 
-The workflow for this apporaching the solution will invovle:
+The workflow for this approaching the solution will involve:
 
-* choosing a state space for the robot's Q-learning system
-* choosing a reward calculation methodology that results in a populated state space that based on the Q-learning algorithm drives the robot to a goal square as quickly as possible
-* figure out adequate hyper parameters for the Q-learning system 
-* setup a training program to adequately train the robot's RL system
-* develop enough diagnostic information to be able to debug issues with the robot while it is training or running the scored test.
+* Running the benchmark model and comparing its scores to the final RL-based model
+* Choosing a state space for the robot's Q-learning system
+* Choosing a reward calculation methodology that results in a populated state space that based on the Q-learning algorithm drives the robot to a goal square as quickly as possible
+* Determine adequate hyper parameters for the Q-learning system 
+* Setup a training program to adequately train the robot's RL system
+* Develop enough diagnostic information to be able to debug issues with the robot while it is training or running the scored test.
 
+Hyper parameters will be determined by running a few experiments with epsilon, and different exploration rate equations
 
 <!--
 

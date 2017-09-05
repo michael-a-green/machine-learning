@@ -12,6 +12,7 @@ set i = 1
 while ($i < 100)
 
     python tester.py test_maze_01.txt | & tee logs/test_01_${i}.log
+    python tester_random.py test_maze_01.txt | & tee logs/test_random_01_${i}.log
 
     @ i++
 
@@ -28,6 +29,8 @@ set i = 1
 while ($i < 100)
 
     python tester.py test_maze_02.txt | & tee logs/test_02_${i}.log
+    python tester_random.py test_maze_02.txt | & tee logs/test_random_02_${i}.log
+
 
     @ i++
 
@@ -43,6 +46,8 @@ set i = 1
 while ($i < 100)
 
     python tester.py test_maze_03.txt | & tee logs/test_03_${i}.log
+    python tester_random.py test_maze_03.txt | & tee logs/test_random_03_${i}.log
+
 
     @ i++
 
