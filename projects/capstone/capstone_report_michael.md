@@ -4,8 +4,11 @@ Michael Green
 September 4, 2017
 
 
-## I. Definition
+## I. Definition [Definition]
+
+<!--
 _(approx. 1-2 pages)_
+-->
 
 ### Project Overview
 
@@ -17,9 +20,9 @@ In this section, look to provide a high-level overview of the project in laymanâ
 
 -->
 
-This project describes and provides a solution to the problem of how to get a robot to automatically traverse a maze of arbitrary size under certain constraints. The project will describe via the [ProblemStatement] the maze and the constraints under which the robot moves through the maze. The project will then describe how we measure the effectiveness of any given solution to the maze traversal problem that the robots comes up with in [Metrics].
+In major subsection [Definition] this project describes and provides a solution to the problem of how to get a robot to automatically traverse a maze of arbitrary size under certain constraints. The project will describe via the [ProblemStatement] the maze and the constraints under which the robot moves through the maze. The project will then describe how we measure the effectiveness of any given solution to the maze traversal problem that the robots comes up with in [Metrics].
 
-In major subsection [Analysis], the project will analyze the maps, which is the input data to this problem in [DataExploration]. The project will provide visualizations to robot solutions and how they compare to the best solution in [Visualizations]. The underlying algorithm that drives the robot's movements throughout the maze in its objective to reach a _goal square_ as described in [Algorithms]. The project compares the chosen algorithm to the benmark algorithm  in [Benchmark].
+In major subsection [Analysis], the project will analyze the maps, which are the input data to this problem in [DataExploration]. The project will provide visualizations to robot solutions and how they compare to the best solution in [Visualizations]. The underlying algorithm that drives the robot's movements throughout the maze in its objective to reach a _goal square_ are described in [Algorithms]. The project compares the chosen algorithm to the benmark algorithm  in [Benchmark].
 
 In major subsection [Methodology], the project will describe what (if any) pre-processing is done to the input data in [Preprocessing]. The project will describe the details of how the algorithm was implemented in [Implementation]. The project will describe what steps where made to improve the robot's maze traversal in [Refinement]. 
 
@@ -28,59 +31,226 @@ In major subsection [Results], the project will provide an evaluation of the mod
 In major subsection [Conclusion] the project will delve into some details of the chosen model and how they are indicators of the overall quality of the model. In [Reflection] the project will describe some aspects of the project that were of peculiar concern or any difficulties encountered while developing this work. And finally in [Improvement] the project will take an aspect of the project that could be improved.
 
 ### Problem Statement [ProblemStatement]
+<!--
 In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
 - _Is the problem statement clearly defined? Will the reader understand what you are expecting to solve?_
 - _Have you thoroughly discussed how you will attempt to solve the problem?_
 - _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
+-->
+
+Simply put, the problem is to develop the "brain" of a robot that takes as input only the number of free squares to its left, front, and right sides given to it by three sensors, and automatically traverse a maze to any one of the maze's four _goal squares_, which are the four squares in the center of the maze. 
+
+The robot will always begin at location (0,0) (shown in red in the diagrams in [Datasets]) facing upwards (`self.heading=='up'`). The other constraint on the problem is that the robot is only allowed to make the following movements once per time step:
+
+* It can rotate either -90, 0, or  90 degrees
+* It can move no more than 3 squares
+
+The robot successfully traverses the maze when it has entered anyone of the four squares in the center of the maze. These will be called the _goal squares_ (shown below in red in the diagrams in [Datasets]) in this proposal.
+
+There is an overall time step limitation: The robot gets a total of 1000 time steps to traverse the maze. As is described in [Metrics], it will perform two runs that must total no greater than 1000 time steps.
 
 ### Metrics [Metrics]
+<!--
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
 - _Are the metrics youâ€™ve chosen to measure the performance of your models clearly discussed and defined?_
 - _Have you provided reasonable justification for the metrics chosen based on the problem and solution?_
+-->
+
+The scoring scheme is as follows:
+
+The robot will be scored based on two runs, where in each run the robot starts at square (0,0) with heading "up":
+
+* In run #1, the score is the number of time steps it took the robot to explore the maze and eventually move into a goal square divided by 30. Run #1 ends when the robot has reached a goal square.
+* In run #2, the score is the number of time steps it took the robot to reach the goal square.
+
+Once it has reached a goal square in run #2, the overall score will be the summation of the score from #1 and run #2.
+
+For example if the robot took 600 steps in run #1 to reach a goal square, and then took
+400 steps to reach the goal in run #2, then the overall score would be:
+
+    Overall Score = 1/30 * 600 + 400 = 420
+
 
 
 ## II. Analysis [Analysis]
+<!--
 _(approx. 2-4 pages)_
+-->
 
 ### Data Exploration [DataExploration]
+
+<!--
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
 - _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
 - _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
 - _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
+-->
+
+The dataset for this problem is composed of the three mazes depicted below.
+
+![Maze 1](maze1.jpg)
+![Maze 2](maze2.jpg)
+![Maze 3](maze3.jpg)
+
+As you can see there are three mazes that must be traversed. The overall shape of  each maze is a perfect square. The dimensions for the first maze are 12x12, for the second maze are 14x14, and the third maze are 16x16.
+
+The mazes are specified in three different text files `test_maze_01.txt`, `test_maze_02.txt`, and `test_maze_03.txt`. The maze is read in by the `test.py` script. The text file is decoded by `test.py` into a maze. All mazes are prefect squares, i.e. the number squares representing the length of the maze is always equal to the number of squares representing the height of the maze. The first line of the text file is a number that represents the length and width of the maze. Each subsequent line of the text file has a special encoding which describes which side of the square has a wall. Each number should be interpreted as a 4 bit binary number. If any given bit is a 0, it means that square has a wall on one if the square's sides, and if it's a 1 means there is no wall on that particular side of the square. Which side has or doesn't have a wall depends on the value of the bit position for a given number as follows:
+
+* bit 0 determines whether a wall is present on the up-facing side of the square
+* bit 1 determines whether a wall is present on the right-facing side of the square
+* bit 2 determines whether a wall is present on the bottom-facing side of the square
+* bit 3 determines whether a wall is present on the left-facing side of the square
+
+Each line of the text file will be a comma separated list of N numbers where N is the width of the maze, and each number encodes the presence or absence of wall on a given side per the encoding described above. There will N lines of these comma separated list of numbers, where N is the height of the maze.
+
+Here as a example is text file for `test_maze_01.txt`:
+```
+12
+1,5,7,5,5,5,7,5,7,5,5,6
+3,5,14,3,7,5,15,4,9,5,7,12
+11,6,10,10,9,7,13,6,3,5,13,4
+10,9,13,12,3,13,5,12,9,5,7,6
+9,5,6,3,15,5,5,7,7,4,10,10
+3,5,15,14,10,3,6,10,11,6,10,10
+9,7,12,11,12,9,14,9,14,11,13,14
+3,13,5,12,2,3,13,6,9,14,3,14
+11,4,1,7,15,13,7,13,6,9,14,10
+11,5,6,10,9,7,13,5,15,7,14,8
+11,5,12,10,2,9,5,6,10,8,9,6
+9,5,5,13,13,5,5,12,9,5,5,12
+```
+
+Here is the corresponding maze rendered graphically by `showmaze.py` with the starting position and _goal squares_ highlighted.
+
+![Maze 1](maze1.jpg)
+
+
 
 ### Exploratory Visualization [Visualizations]
+<!--
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant characteristic or feature about the dataset or input data?_
 - _Is the visualization thoroughly analyzed and discussed?_
 - _If a plot is provided, are the axes, title, and datum clearly defined?_
+-->
+
+There are several interesting properties of these mazes that needed to be taken into account when devising a effective algorithm to enable the robot to traverse the mazes.
+
+* _Maze size_: Larger mazes may take longer to traverse than smaller mazes
+* _Number of dead ends_: The number of dead ends (marked in maze 3 by the red circles in the diagram below) may result in the robot to taking longer to traverse a maze and there may be multiple approaches/heuristics that may have to be implemented in the robot's traversal algorithm to effectively identify and move out of dead ends.
+* _Number of loops_: The number and size of loops (some in maze 3 with the green lines in the diagram below) in a maze can also result in the robot taking longer than usual to traverse a maze as the robot could possibly think that because it's moving at every time step that it is making progress towards a _goal square_ when in fact it's just traveling in a loop. Again the algorithm must be tuned to learn about loops and move out of them.
+
+![Maze 3 Dead Ends And Loops](maze3_deadends_loops.jpg)
 
 ### Algorithms and Techniques [Algorithms]
+
+<!--
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
 - _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
 - _Are the techniques to be used thoroughly discussed and justified?_
 - _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
+-->
+
+
+The algorithm that drives the robot's decision making for traversing the maze is a modified Q-learning algorithm. The difference between the modified Q-learning algorithm and the algorithm used by the robot is that the robot has a canned behavior for moving out of dead ends that is not driven from state-action-value information accumulated via the iterative action,reward process. 
+
+#### Q-Learning Description
+
+Q-learning is an algorithm that is a kind reinforcement learning, where an agent can determine a set of actions to take to achieve via an iterative calculation that converges to a set of actions that when performed results in the agent reaching its goal.
+
+The basic model in which the robot (the agent) operates and performs Q-learning is shown in the diagram below:
+
+![RL Agent-Environment Relationship](RL_agent_environment.jpg)
+
+As part of the Q-learning process, the agent, which for this project is the robot, will perform some action (A~t), where the possible actions are described in [ProblemStatement]. After performing its action, the environment will deliver a new state and a reward. 
+
+The state at any given time t (s~t) is defined for this project as a combination of the robot's maze coordinates (location of the robot within the maze) and robot orientation. For example the initial state of the robot is defined as `(0,0) u` which means the robot is at location (0,0) in the maze and is facing up.
+
+The agent (robot) will calculate an action-value for taking a specific action a~t in state s~t for a given time t using the equation below:
+
+\\( Q(s_t,a_t) \gets  Q(s_t,a_t) + \alpha * (r(s_t,a_t) + \gamma * max_a Q(s_t+1, a) - Q(s_t,a_t) )\\)
+
+Where the following terms are defined:
+
+* \\( Q(s_t,a_t) \\) : The value of taking action a at time t (a~t) in state s at time t (s~t)
+* \\( r(s_t,a_t) \\) : The immediate reward for taking action a at time t (a~t) in state s at time t (s~t)
+* \\(  \gamma \\)  : Discount rate for the action-value of future actions
+* \\( \alpha \\) : Learning rate which determines how much should current action values be impacted by updated calucations for new actions
+* \\( max_a Q(s_t+1, a)  \\) : The largest possible action value at time t+1 for all possible actions a that can be taken in state s~t+1
+
+Please note that \\( \gets \\) means that \\( Q(s_t,a_t) \\) is being updated after ever action a~t. 
+
+Since the environment (the maze) does not change over time, future rewards factor into Q(s,a) update calculations, hence \\( \gamma \\) is not zero.
+
+The Q-learning algorithm converges to a collection of preferred actions (actions that for a given state have the largest action-value for all possible states) that will reach its goal based on the following factors:
+
+* Based on the set of rewards for all possible actions
+* How much time the robot/agent spends performing actions based only on the current Q(s,a) or on a random action
+
+For this project, the robot is rewarded as follows:
+
+* If the robot performs an action that results in it entering a _goal square_ it receives a reward of 10
+* If the robot performs an action where it does not move, it receives a reward of -10
+* If the robot performs an action that results in it moving (changing position) it will receive a reward that is an inverse function of its average distance from its new location to the goal squares
+
+The robot will at any time t randomly decide to  perform an action strictly based on some constrained random action based on probability \\( \epsilon \\) which is calculated over time using this equation:
+
+\\( \epsilon = | \cos(0.03 * t) | \\)
+
+Otherwise it will perform an action based on Q(s_t,a_t). The parameter \\( \epsilon \\) is also known as the exploration/exploitation factor. The action the robot takes is contrained random (not purely random) because the robot will never move backwards (have negative movement) though the environment does allow the robot to move in reverse. This was done to simplify next-state calcuation and reward calcuation. Also it was found that when the robot's benmark behavior which includes being allowed to move backwards did not help the robot achieve its goal faster than not allowing it to move backwards. <!-- prove this?? I hope not -->
+
+
+### Heuristic For Maneuvering Deadends
+
+Regardless of whether based on \\( \epsilon \)) the robot decides to perform an action based on Q(s,a) or random action, it will always perform a series of maneuvers when it reaches a _dead end_ state. A dead state is defined as any state where the sensor input is `[0, 0, 0]`. In this particular case the robot will perform a specific set of movements over the next two time steps after which it first detects a sensor reading of `[0, 0, 0]`. The movements are as follows:
+
+* In the first time step after encountering a _dead end_ it will always rotate 90 degrees and move 0 spaces
+* In the second time step after encountering a _dead end_ it will always rotate 90 degrees and move 0 spaces
+
+It will then after these two time steps proceed to act per the Q-learning algorithm using \\( \epsilon \\) as the probability determinator for the type of next action (Q-based or purely constrained random). The robot does update its Q(s,a) for these deadend states but never uses these values.
+
+<!-- Should I discuss alternatives with respect to deadend avoidance?-->
 
 ### Benchmark [Benchmark]
+<!--
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
 - _Has some result or value been provided that acts as a benchmark for measuring performance?_
 - _Is it clear how this result or value was obtained (whether by data or by hypothesis)?_
+-->
+
+The benchmark model used in this project will be that of a robot that always randomly makes movements on every time step. I will compare the score achieved by the RL-based robot to the score of a robot that always moves based on random decisions.
 
 
 ## III. Methodology [Methodology]
+<!--
 _(approx. 3-5 pages)_
+-->
 
 ### Data Preprocessing [Preprocessing]
+
+<!--
 In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
 - _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
 - _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
 - _If no preprocessing is needed, has it been made clear why?_
+-->
+
+Even though the robot takes only sensory input from the environment it uses this input data to derive other inputs that are used in the Q-learning operation of the robot. The real input data to the robot from the environment is just a sensor input expressed as a list of integers which represents the number of free spaces to the left, front, and right facing sides of the robot. Hence `[1,2,3]` means that there is 1 open space one the left, 2 open spaces to the front, and 3 open spaces one the right side of the robot.
+
+It derives *heading* (which direction is the robot facing) that is a function of the starting state of the robot and its subsequent actions. It is used to determine its new location as a consequence of a set of actions at any point in time or location within the maze.
+
+It derives from sensory data and the fact that its initial location is always (0,0) a *location* within the maze in the form of (x,y) coordinates and then used as part of the state of the robot at any given time and used as part of calculating its reward. 
+
+The *reward* is a preprocessed input of the input sensor data as the reward is a function of the robot's average distance from a _goal square_ and whether or not the coordinates of its new location is different from its location in the immediately prior time step.
 
 ### Implementation [Implementation]
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
 - _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
 - _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
+
+
 
 ### Refinement [Refinement]
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
