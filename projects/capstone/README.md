@@ -17,15 +17,16 @@ Please email [machine-support@udacity.com](mailto:machine-support@udacity.com) i
 ### Software required
 
 1. Python 2.7.12 Installation. Anaconda Python 4.3.23 was used as part of this project.
-
+1. Use a recent version of Linux or MacOS machine using a recent version of tcsh. macOS Sierra 10.12.6 and tcsh version `6.18.01 (Astron) 2012-02-14 (x86_64-apple-darwin)` were used for this project.
+1. MacBook Pro with 16GB of LPDDR3 DRAM, 2.9GHz i7-6920HQ, and AMD Radeon 460 with 4GB of GDDR5 RAM was used to develop and run this project. You need about 5GB of storage to run the training and testing scripts.
 
 ### Steps to Produce Results Described in the Project Report
 
 1. `cd open_projects/robot_motion_planning`
 1. `mkdir logs logs2`
-1. To train the robot on mazes 01, 02, 03, and 04, and run the benmark random behavior robot in maze 04 run this command `tcsh train_then_test.csh`
-1. To run the benmark robot on mazes 01, 02, 03 run this command `tcsh train_then_test.csh`
-1. To visualize a solution run this command : `python showmaze_robot_movements.py --testname <Name of Test Maze Text File> --coordinates <Listing of Coordinates For a Solution>`
+1. To train the robot on mazes 01, 02, 03, and 04, and run the benmark random behavior robot in maze 04 run this command: `tcsh train_then_test.csh`
+1. To run the benmark robot on mazes 01, 02, 03 run this command: `tcsh train_then_test.csh`
+1. To visualize a solution run this command: `python showmaze_robot_movements.py --testname <Name of Test Maze Text File> --coordinates <Listing of Coordinates For a Solution>`
 
 example:
 
