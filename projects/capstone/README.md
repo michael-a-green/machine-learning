@@ -36,3 +36,13 @@ There are various ways to parse out the coordinates. Here's an example:
 
 `grep "position" logs/test_random_04_3304.log | awk '{print $5 $6}' | sed "s/\]\,/]/g" | & tee logs/test_random_04_3304_coordinates.txt`
 
+### Documents
+
+The name of the proposal is `proposal.pdf`
+The name of the project report is `report.pdf`
+
+Here is a link to the proposal [review] 
+
+
+[review]: https://review.udacity.com/?utm_medium=email&utm_campaign=reviewsapp-submission-reviewed&utm_source=blueshift&utm_content=reviewsapp-submission-reviewed&bsft_clkid=b4c73447-ebe3-409f-a156-d3b4c91f6405&bsft_uid=0072092b-be5a-4c0a-a91a-06edfca359ff&bsft_mid=4ef10896-f393-4b4a-b79d-b13aa0419d48&bsft_eid=6f154690-7543-4582-9be7-e397af208dbd&bsft_txnid=7c8904bf-de20-40ad-9eb1-e79284f1f3b5#!/reviews/704766
+
