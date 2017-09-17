@@ -405,19 +405,33 @@ In this section, you will need to provide some form of visualization that emphas
 
 Below are visualizations of the Q-learning robot's solutions to `test_maze_01.txt`, `test_maze_02.txt`, `test_maze_03.txt`, and `test_maze_04.txt`. The red line depicts the movements the robot took in the first run, and the purple line shows the path the robot took in the second run.
 
-![Maze 01 Solution](maze_01_solution.gif)
+![Maze 01 Solution](maze_01_solution.jpg)
+
+You can refer to [maze01] for the motion GIF visualization.
+
+[maze01]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_01_solution.gif "Maze 01 Solution"
+[maze02]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_02_solution.gif "Maze 02 Solution"
+[maze03]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_03_solution.gif "Maze 03 Solution"
+[maze04]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_03_solution.gif "Maze 03 Solution"
 
 The score for the maze 01 solution is 47.867.
 
-![Maze 02 Solution](maze_02_solution.gif)
+![Maze 02 Solution](maze_02_solution.jpg)
+
+You can refer to [maze02] for the motion GIF visualization.
 
 The score for the maze 02 solution is 99.400.
 
-![Maze 03 Solution](maze_03_solution.gif)
+![Maze 03 Solution](maze_03_solution.jpg)
+
+You can refer to [maze03] for the motion GIF visualization.
 
 The score for the maze 03 solution is 107.633
 
-![Maze 04 Solution](maze_04_solution.gif)
+![Maze 04 Solution](maze_04_solution.jpg)
+
+
+You can refer to [maze04] for the motion GIF visualization.
 
 The score for the maze 04 solution is 43.233.
 
