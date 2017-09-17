@@ -473,6 +473,7 @@ class Robot(object):
             #Just acting randomly
             chosen_rotation = random.choice(self.VALID_ROTATIONS)
             chosen_movement = random.choice(range(-3,4))
+            print "time=%0d robot unconstrained randomly picks rotation and movement (%0d, %0d)"%(self.timestep, chosen_rotation, chosen_movement)
         else:
             #Will act randomly with probability epsilon otherwise picks
             #best action based on Q table
