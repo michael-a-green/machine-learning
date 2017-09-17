@@ -25,7 +25,7 @@ Please email [machine-support@udacity.com](mailto:machine-support@udacity.com) i
 1. `cd open_projects/robot_motion_planning`
 1. `mkdir logs logs2`
 1. To train the robot on mazes 01, 02, 03, and 04, and run the benmark random behavior robot in maze 04 run this command: `tcsh train_then_test.csh`
-1. To run the benmark robot on mazes 01, 02, 03 run this command: `tcsh train_then_test.csh`
+1. To run the benmark robot on mazes 01, 02, 03 run this command: `tcsh train_then_test2.csh`
 1. To visualize a solution run this command: `python showmaze_robot_movements.py --testname <Name of Test Maze Text File> --coordinates <Listing of Coordinates For a Solution>`
 
 example:
