@@ -20,6 +20,26 @@ In this section, look to provide a high-level overview of the project in laymanâ
 
 -->
 
+The project involves developing the learning system to enable a virtual robot to automatically traverse several mazes.
+
+The project is a form of the [Micromouse](https://en.wikipedia.org/wiki/Micromouse) is an event that began in the   1970's and has since become a worldwide event attracting roboticists and and robots enthusiast from all parts of the world.
+
+Also there has been ongoing research into robot automation and in particular automatic maze traversal using various underlying algorithms.[^1][^2][^3]
+
+[^1]: Osmankovic, D & Konjicija, Samim. (2011). Implementation of Q - Learning algorithm for solving maze problem. 1619-1622. 
+[^2]: Ahamed Munna, Tanvir. (2013). Maze solving Algorithm for line following robot and derivation of linear path distance from nonlinear path. .
+[^3]: Rakshit, Pratyusha & Konar, Amit & Bhowmik, Pavel & Goswami, Indrani & Das, Sanjoy & C. Jain, Lakhmi & Nagar, Atulya. (2013). Realization of an Adaptive Memetic Algorithm Using Differential Evolution and Q-Learning: A Case Study in Multirobot Path Planning. Systems, Man, and Cybernetics: Systems, IEEE Transactions on. 43. 814-831. 10.1109/TSMCA.2012.2226024. 
+
+
+This past research is relevant because it offers proven techniques that serve as the useful body of work regarding how machine learning has helped to produce solutions to tough robot automation problems that have applications from consumer electronics, to  medicine, to safety and security. For example, the underlying technology described here  can be applied to urban rescue robots such as what is described in [^5]
+
+[^5]: Davids, Angela. (2002). Urban Search and Rescue Robots: From Tragedy to Technology.. IEEE Intelligent Systems. 17. 81-83. 10.1109/5254.999224. 
+
+As the concepts of robot automation embody themselves in an ever greater variety of applications, there is a need to explore various alternative solutions to this particular problem. This project describes how Q-learning can be applied to develop a robot that can traverse a maze automatically with a reasonable amount of training.
+
+
+
+<!--
 In major subsection [Definition] this project describes and provides a solution to the problem of how to get a robot to automatically traverse a maze of arbitrary size under certain constraints. The project will describe via the [ProblemStatement] the maze and the constraints under which the robot moves through the maze. The project will then describe how the effectiveness of any given solution to the maze traversal problem is measured in [Metrics].
 
 In major subsection [Analysis], the project will analyze the maps, which are the input data to this problem in [DataExploration]. The project will provide visualizations to robot solutions and how they compare to the best solution in [Visualizations]. The underlying algorithm that drives the robot's movements throughout the maze in its objective to reach a goal square are described in [Algorithms]. The project compares the chosen algorithm to the benmark algorithm  in [Benchmark].
@@ -29,6 +49,7 @@ In major subsection [Methodology], the project will describe what (if any) pre-p
 In major subsection [Results], the project will provide an evaluation of the model in [ModelEvaluation]. The project will compare the benchmark model to the chosen model and use this comparison as justification for the chosen model in [Justification].
 
 In major subsection [Conclusion] the project will delve into some details of the chosen model and how they are indicators of the overall quality of the model. In [Reflection] the project will describe some aspects of the project that were of peculiar concern or any difficulties encountered while developing this work. And finally in [Improvement] the project will take an aspect of the project that could be improved.
+-->
 
 ### Problem Statement [ProblemStatement]
 <!--
@@ -48,6 +69,10 @@ The robot will always begin at location (0,0) (shown in red in the diagrams in [
 The robot successfully traverses the maze when it has entered anyone of the four squares in the center of the maze. These will be called the goal squares (shown below in red in the diagrams in [DataExploration]).
 
 There is an overall time step limitation: The robot gets a total of 1000 time steps to traverse the maze. As is described in [Metrics], it will perform two runs that must total no greater than 1000 time steps.
+
+The problem will be approached by first studying the mazes that will have to be traversed. Then multiple robot models will be developed and tested to see how well each traverses the maze. Visualizations (using python turtle graphics) of the attempts the robot makes to traverse the maze will be studied to determine improvements required to the robot's mechanism for learning and traversing mazes. These steps (develop a model, test the model on a maze, evaluate the model via visualization, and refine the model) will be performed iteratively until all of the mazes can be solved using a Q-learning model that can be trained with a reasonable amount of compute resources. In each step, various aspects of the robot's implementation will be analyzed and updated to improve the robot in subsequent iterations.
+
+
 
 ### Metrics [Metrics]
 <!--
@@ -71,6 +96,9 @@ For example if the robot took 600 steps in run #1 to reach a goal square, and th
     Overall Score = 1/30 * 600 + 400 = 420
 
 
+This metric is mandated by the initial project definition as outlined [here]. The metric is considered to be reasonable because it discounts the steps required in the first run which is the run the robot uses to explore the maze and emphasizes the efficiency of the robot's second run which should be the run it makes based on whatever it was able to learn about the maze in its first run.
+
+[here]: https://docs.google.com/document/d/1ZFCH6jS3A5At7_v5IUM5OpAXJYiutFuSIjTzV_E-vdE/pub
 
 ## II. Analysis [Analysis]
 <!--
@@ -284,6 +312,28 @@ The difference between `trainer.py` and `tester.py` is that the `max_time` and `
 
 It will not chose a negative movement, and the `constrained_random_action()` function is used to detect when the robot has entered a dead end.
 
+#### Challenges Faced Implementing The Q-Learning Robot
+These were some of the largest challenges faced while executing this project:
+
+* Defining the state for the Q-table of the robot
+* Defining the reward function for the Robot
+* Determining the type of random actions to allow and to not allow the robot to perform
+* How to reuse training in the scored runs.
+
+It was a challenge to define the state of the robot. A state is required because the Q-learning algorithm requires that the agent record action-values for all possible actions for each given state the agent can take on within a given environment. It's know from working on previous projects that if a state-type is not chosen correctly it may either result in a state-space that requires too much training in order to adequately cover it or may result in a state-space that does not comprehensively describe all the possible situations the agent may encounter in the environment. The bottom line consequence of either situation is that the robot would not be able to solve mazes at all even when using very large training trials.
+
+At first the the chose state for the robot was just its location in the maze using an (x,y) coordinate system with the origin at the start point in the maze. It was originally thought that this would result in a very small state space (essentially the state space is \\( N^2 \\) where \\( N \\) is the dimension of the maze). After some large training trials (1000's of training trials) it was found that the robot could not successfully traverse certain mazes. It was then realized that the best action a robot should take not only is dependent upon its location in the maze, but _also in which direction the robot was heading in that given position_. This results in a larger state space (now it's \\( 4*N^2 \\)). But this was a tractable increase in size: meaning the amount of extra training was reasonable (it was not an exponential increase in state space). In return for the increased state space, the new state definition resulted in a Q-table that more accurately incorporated action-values in a Q-table that once adequately trained resulted in the robot being able to traverse all of the mazes.
+
+The second challenge involved determining a good reward system. It is understood that the reward function for the Q-learning robot was vital to the behavior of the robot. Due to underlying complexities of the maze (the presence of several dead ends and loops) a simple reward system that rewarded a single negative value for all types of movements and large positive value for movements into a goal square proved counterproductive to achieving a final behavior that solved the maze. After observing robot behaviors it was realized that:
+
+* Actions that result in zero movement should be discouraged
+* Actions that move away from the goal squares should be discouraged, but in a gradual manner so to not drive the robot into dead ends that happen to be close to a goal square
+
+Consequently a more complex reward function was devised where the robot would receive large negative rewards for running into walls, and would receive better rewards for actions that move it closer to the goal squares resulted in the robot converging during training to behaviors that solved all of the mazes.
+
+The third challenge entailed determining how often the robot should behave randomly and what would be considered the allowed actions when it behaves randomly. After some trail-and-error it was realized that allowing it to do all of the actions defined in the problem statement would not be the best policy to take when allowing the robot to take random actions. It was found that moving backwards (especially when moving backwards out of a dead end) made it more difficult for the robot to act efficiently on the actions subsequent to its backwards movement. So a new set of movements and rotations  were setup in the robot when it acts randomly that did not include it moving backwards. 
+
+The fourth challenge centered around how to implement the robot to enable transfer the training accumulated during the robot's training trials to the final scored runs. It was determined that writing out the trained Q-table at the end of its training trials and reading it in before starting its scored runs was a simple and low-cost way to do that.
 
 ### Refinement [Refinement]
 
@@ -344,14 +394,15 @@ In this section, the final model and any supporting qualities should be evaluate
 -->
 
 
-Q-learning was selected because it is a algorithm that is applicable to problems like the maze traversal problem. It has been used in training robot motion problems in various applications. The Q-learning robot is able to find solutions to all of the mazes after some training. This is because the robot will act randomly according to the epsilon equation during its first and second runs and hence does not always follow its Q-table. This enabled the robot to continue to explore the maze which resulted in the robot to finding shorter paths to the goal squares in its second run than its first run in some cases. As will be described in [Visualization], the robot's second run is often different than its first run because of the continued explorative behavior during the first and second run.
+Q-learning was selected because it is an algorithm that is applicable to problems like the maze traversal problem. It has been used in training robot motion problems in various applications. The Q-learning robot is able to find solutions to all of the mazes after some training. This is because the robot will act randomly according to the epsilon equation during its first and second runs and hence does not always follow its Q-table. This enabled the robot to continue to explore the maze which resulted in the robot finding shorter paths to the goal squares in its second run than its first run in some cases. As will be described in [Visualization], the robot's second run is often different than its first run because of the continued explorative behavior during the first and second run.
 
 The parameters (gamma, alpha, epsilon, and the choice of state) where reasonable. Gamma was set to 0.9 to provide some value to future actions given that the maze does not change over time and hence the value of future actions are meaningful. Alpha (learning rate) was set to 0.5 to enable exploration to influence learning without skewing learning due to poor randomly selected actions. The choice of state was useful. The chosen state enabled an adequate description of the state space of the robot in the maze without becoming too large and hence negatively impacting the effectiveness of training.
 
 The Q-learning robot was tested with all three mazes (`test_maze_01.txt`, `test_maze_02.txt`, and `test_maze_03.txt`). In all cases the robot was able to find solutions with the same amount of pre-training. The robot is also able to generalize. After creating a fourth maze (`test_maze_04.txt`) it was able to find a solution. The scores and comparison to the benchmark model is detailed in [Justification]. Solutions will be depicted in [Visualization].
 
-The model was derived from the Q-learning algorithm. It was modified by adding a heuristic that enables the robot to always quickly identify and move out of dead ends while at the same time enabling it to an effective move subsequent to exiting a dead end. The robot's motion was modified to enable it to predict its location in the maze even with randomly selected actions, which was the basis of the robot's reward system. The reward equation was essential to getting the robot to converge onto a solution to all mazes. 
+The model was derived from the Q-learning algorithm. It was modified by adding a heuristic that enables the robot to always quickly identify and move out of dead ends while at the same time enabling it to do an effective move subsequent to exiting a dead end. The robot's motion was modified to enable it to predict its location in the maze even with randomly selected actions, which was the basis of the robot's reward system. The reward equation was essential to getting the robot to converge onto a solution to all mazes. 
 
+The overall robustness of the robot was not absolute. Meaning, that the robot cannot be guaranteed to solve a given maze 100% of the time for any given scored run. As described in [Justification], the robot only finds solutions to mazes a certain percent of the time. It has the ability to find a maze for all mazes described in this project, and as will be shown can find solutions to mazes most of the time for certain mazes. But due to the fact that the Q-learning algorithm and the robots implemented behavior includes some random actions, there is the chance that for any given maze that it has solved on run `X`, that it will fail to solve that same maze on run `X+1`.
 
 ### Justification [Justification]
 <!--
@@ -412,7 +463,7 @@ You can refer to [maze01] for the motion GIF visualization.
 [maze01]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_01_solution.gif "Maze 01 Solution"
 [maze02]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_02_solution.gif "Maze 02 Solution"
 [maze03]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_03_solution.gif "Maze 03 Solution"
-[maze04]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_03_solution.gif "Maze 03 Solution"
+[maze04]: https://github.com/michael-a-green/machine-learning/blob/master/projects/capstone/maze_04_solution.gif "Maze 03 Solution"
 
 The score for the maze 01 solution is 47.867.
 
